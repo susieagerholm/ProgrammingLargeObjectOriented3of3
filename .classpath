@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+	<classpathentry kind="con" path="build"/>
+	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="lib/minidraw.jar" sourcepath="H:/Uddannelse/DIT/PaSOOS_Part-3/frs-src/library/MiniDraw/src/">
+		<attributes>
+			<attribute name="source_encoding" value="ISO-8859-1"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/json-io-4.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

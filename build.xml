@@ -1,0 +1,141 @@
+<project name="HotGammon" default="help" basedir=".">
+    <property name="source-directory" value="src"/>
+    <property name="test-source-directory" value="test"/>
+    <property name="build-directory" value="build"/>
+    <property name="javadoc-directory" value="javadoc"/>
+    <property name="resource-directory" value="resource"/>
+
+    <property name="junit-jar" value="lib/junit-4.4.jar"/>
+    <property name="minidraw-jar" value="lib/minidraw.jar"/>
+	<property name="gson-jar" value="lib/gson-2.5.jar"/>
+        
+    <path id="class-path">
+      <pathelement location="${build-directory}"/>
+      <pathelement location="${junit-jar}"/>
+      <pathelement location="${minidraw-jar}"/>
+    	<pathelement location="${gson-jar}"/>
+    </path>
+    
+    <presetdef name="my.javac">
+        <javac includeantruntime="false" />
+    </presetdef>
+    
+    <target name="help">
+      <echo>
+      HotGammon build management. 
+      Targets:
+        build-src: Builds production code.
+        test:      JUnit test production code.
+        clean:     Removes all bytecode.
+        javadoc:   Generate JavaDoc.
+
+        show:       Show basic graphics for exercise 35.40 - 35.42
+        server:     Run the network game server
+        client:     Run the network game client
+      </echo>
+    </target>
+    
+    <target name="clean">
+      <delete dir="${build-directory}"/>
+      <delete dir="${javadoc-directory}"/>
+    </target>
+
+    <target name="prepare">
+      <mkdir dir="${build-directory}"/>
+      <mkdir dir="${javadoc-directory}"/>
+    </target>
+
+    <target name="build-src" depends="prepare">
+      <my.javac srcdir="${source-directory}"
+        destdir="${build-directory}">
+        <classpath refid="class-path"/>
+      </my.javac>
+    </target>
+
+    <target name="build-test" depends="build-src">
+      <my.javac srcdir="${test-source-directory}"
+        destdir="${build-directory}">
+        <classpath refid="class-path"/>
+      </my.javac>
+    </target>
+
+    <target name="copy-resource" depends="prepare">
+      <copy todir="${build-directory}\${resource-directory}" >
+        <fileset dir="${resource-directory}">
+          <include name="*.gif"/>
+        </fileset>
+      </copy>
+    </target>
+    
+    <target name="build-all" depends="build-src,build-test,copy-resource"/>
+
+    <target name="test"  depends="build-all">
+      <echo>Test of Common</echo>
+      <java classname="org.junit.runner.JUnitCore">
+          <arg value="common.game.TestLocation"/>
+	      <arg value="common.game.TestLogDecorator"/>
+      	  <arg value="common.game.TestGameObserverImpl"/>
+          <classpath refid="class-path"/>
+      </java>
+      <echo>Test of Variants</echo>
+      <java classname="org.junit.runner.JUnitCore">
+          <arg value="variants.alphamon.game.TestAlphamon"/>
+          <arg value="variants.betamon.game.TestBetamon"/>
+          <arg value="variants.gammamon.game.TestGammamon"/>
+          <arg value="variants.epsilonmon.game.TestEpsilonmon"/>
+          <arg value="variants.handicap.game.TestHandicap"/>
+          <arg value="variants.semimon.game.TestSemimon"/>
+          <classpath refid="class-path"/>
+      </java>
+      <echo>Test of Stubs</echo>
+      <java classname="org.junit.runner.JUnitCore">
+          <arg value="stubs.TestFixedValueTestStub"/>
+          <classpath refid="class-path"/>
+      </java>
+    </target>
+
+    <!-- run simple 'show graphics' minidraw application -->
+    <target name="show" depends="build-all">
+      <java fork="yes" classname="TestBoardGameGUI">
+        <classpath>
+          <path refid="class-path"/>
+        </classpath>
+      </java>
+    </target>
+	
+    <target name="server" depends="build-all">
+      <java fork="yes" classname="GameNetworkServerRunner">
+        <classpath>
+          <path refid="class-path"/>
+        </classpath>
+      </java>
+    </target>
+	
+    <target name="client" depends="build-all">
+      <java fork="yes" classname="GameNetworkClientRunner">
+        <classpath>
+          <path refid="class-path"/>
+        </classpath>
+      </java>
+    </target>
+    <target name="dicerollvisualtest" depends="build-all">
+      <java fork="yes" classname="guidiceroll.visual.ShowDice">
+        <classpath>
+          <path refid="class-path"/>
+        </classpath>
+      </java>
+    </target>
+    
+    <target name="javadoc" depends="prepare">
+      <javadoc
+        packagenames="hotgammon.*"
+        destdir="${javadoc-directory}"
+        sourcepath="${source-directory}"
+        windowtitle="HotGammon">
+
+        <classpath refid="class-path"/>
+      </javadoc>
+      <echo> JavaDoc available in directory ${javadocDirectory}/index.html. </echo>
+    </target>
+    
+</project>
